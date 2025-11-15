@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+body {
+  background: linear-gradient(to bottom right, #fff7ed, #ffedd5);
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
+
+.overflow-x-auto {
+  scroll-behavior: smooth;
+}
+
+input:focus {
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.hover\:shadow-lg:hover {
+  transform: translateY(-1px) scale(1.02);
+  transition: all 0.3s ease;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}

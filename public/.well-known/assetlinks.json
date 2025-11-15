@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.shantikunj.gurudevbooks",
+      "sha256_cert_fingerprints": [
+        "14:12:C4:22:42:97:8D:46:A3:71:F2:90:22:26:42:58:5C:A9:2F:61:EA:C8:BB:F6:17:D3:20:F3:96:10:08:81"
+      ]
+    }
+  }
+]

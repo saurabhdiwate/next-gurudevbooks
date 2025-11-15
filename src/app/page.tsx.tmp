@@ -1,0 +1,104 @@
+"use client";
+import React, { useEffect, useState, useCallback } from 'react';
+import Header from '../components/Header';
+import CategoriesSection from '../components/CategoriesSection';
+import { SupabaseDataService, testSupabaseConnection } from '../services/supabaseService';
+import { authService } from '../services/authService';
+import { Book } from '../types/Book';
+import { useRouter } from 'next/navigation';
+
+export default function HomePage() {
+  const router = useRouter();
+  const [continueReading, setContinueReading] = useState<Book[]>([]);
+  const [popularBooks, setPopularBooks] = useState<Book[]>([]);
+  const [allBooks, setAllBooks] = useState\u003cBook[]\u003e([]);
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  const loadBooks = async () => {
+    try {
+      const books = await SupabaseDataService.getInitialBooks();
+      setAllBooks(books as any);
+      const featured = books.filter((book: any) => {
+        const featuredValue = (book as any).is_featured || (book as any).isFeatured;
+        return featuredValue === 'featured' || featuredValue === 'yes' || featuredValue === 'true' || featuredValue === '1' || featuredValue === true;
+      });
+      const popular = books.filter((book: any) => {
+        const popularValue = (book as any).is_popular || (book as any).isPopular;
+        return popularValue === 'popular' || popularValue === 'yes' || popularValue === 'true' || popularValue === '1' || popularValue === true;
+      });
+      setContinueReading(featured.length > 0 ? (featured as any).slice(0, 5) : (books as any).slice(0, 5));
+      setPopularBooks(popular.length > 0 ? (popular as any).slice(0, 10) : (books as any).slice(5, 15));
+    } catch {
+      setAllBooks([]);
+      setContinueReading([]);
+      setPopularBooks([]);
+    }
+  };
+
+  const initializeApp = useCallback(async () => {
+    try {
+      await authService.initialize();
+      const profile = authService.getUserProfile();
+      if (profile) {
+        setUserProfile(profile);
+      }
+      const isConnected = await testSupabaseConnection();
+      await loadBooks();
+      if (!isConnected) {
+        return;
+      }
+    } catch {
+      await loadBooks();
+    }
+  }, []);
+
+  useEffect(() => {
+    initializeApp();
+    const authCheckInterval = setInterval(() => {
+      const profile = authService.getUserProfile();
+      setUserProfile(profile);
+    }, 5000);
+    return () =\u003e clearInterval(authCheckInterval);
+  }, [initializeApp]);
+
+  const handleSearch = (query: string) => {
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query)}`);
+    }
+  };
+
+  const handleCategorySelect = (category: any) => {
+    if (category && category.slug) {
+      router.push(`/books/c/${category.slug}`);
+    }
+  };
+
+  const handleSubcategorySelect = (category: any, subcategory: any) => {
+    if (category && category.slug && subcategory && subcategory.slug) {
+      router.push(`/books/c/${category.slug}/${subcategory.slug}`);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-100">
+      <Header showWelcome={true} books={allBooks} onSearch={handleSearch} />
+      <div className="pt-32 pb-16">
+        <main className="px-4 space-y-6 pt-4">
+          {userProfile && (
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                <div className="text-2xl font-bold text-orange-600 mb-1">{userProfile?.books_completed || 0}</div>
+                <div className="text-gray-600 text-sm">Books Completed</div>
+              </div>
+              <div className="bg-white rounded-lg shadow-md p-4 text-center">
+                <div className="text-2xl font-bold text-green-600 mb-1">{userProfile?.total_satkarm || 0}</div>
+                <div className="text-gray-600 text-sm">Satkarm</div>
+              </div>
+            </div>
+          )}
+          <CategoriesSection onCategorySelect={handleCategorySelect} onSubcategorySelect={handleSubcategorySelect} showHeader={false} />
+        </main>
+      \u003c/div\u003e
+    \u003c/div\u003e
+  );
+}

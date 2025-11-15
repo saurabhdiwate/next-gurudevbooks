@@ -1,0 +1,35 @@
+"use client";
+import React from 'react';
+import SearchBar from '../components/SearchBar';
+
+interface HeaderProps {
+  showWelcome?: boolean;
+  books?: any[];
+  onSearch?: (query: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ showWelcome = false, books = [], onSearch }) => {
+  return (
+    <header
+      className="fixed top-0 left-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-500 px-4 pb-4 shadow-lg rounded-b-2xl z-40"
+      style={{ paddingTop: 'calc(env(safe-area-inset-top, 0px) + 24px)' }}
+    >
+      <div className="max-w-sm mx-auto">
+        <div className="mb-3 mt-2 overflow-hidden">
+          <p
+            className="text-white text-lg font-bold whitespace-nowrap animate-marquee"
+          >
+            ।। ॐ भूर्भुव: स्व: तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो न: प्रचोदयात् ।।
+          </p>
+        </div>
+        <SearchBar 
+          books={books}
+          onSearch={onSearch!}
+          className={showWelcome ? "mb-1" : ""}
+        />
+      </div>
+    </header>
+  );
+};
+
+export default Header;

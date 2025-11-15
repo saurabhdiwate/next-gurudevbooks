@@ -1,0 +1,35 @@
+export interface Book {
+  id: string;
+  slug?: string;
+  book_name?: string;
+  title?: string;
+  author: string;
+  image_url?: string;
+  coverUrl?: string;
+  progress?: number;
+  rating?: number;
+  category?: string;
+  description?: string;
+  likes?: number;
+  isFavorite?: boolean;
+  isLiked?: boolean;
+  pages?: number;
+  totalPages?: number;
+  size?: string;
+  fileSize?: string;
+  publication_year?: number;
+  publishedDate?: string;
+  pdf_url?: string;
+  sub_category?: string;
+  subcategory?: string;
+  category_slug?: string;
+  subcategory_slug?: string;
+  code?: string;
+  book_size?: string;
+  language?: string;
+  is_active?: number;
+  is_featured?: string;
+  is_popular?: string;
+  created_at?: string;
+  updated_at?: string;
+}
