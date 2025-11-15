@@ -1,11 +1,11 @@
 "use client";
-import React, { useMemo } from 'react';
+import React, { useMemo, Suspense } from 'react';
 import Header from '../../components/Header';
 import SearchResults from '../../components/SearchResults';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { SupabaseDataService } from '../../services/supabaseService';
 
-export default function SearchPage() {
+function SearchContent() {
   const router = useRouter();
   const params = useSearchParams();
   const query = params.get('q') || '';
@@ -37,5 +37,13 @@ export default function SearchPage() {
         />
       </div>
     </>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense>
+      <SearchContent />
+    </Suspense>
   );
 }

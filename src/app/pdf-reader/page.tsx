@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
-import PdfBookReader from '../../components/PdfBookReader';
+import dynamic from 'next/dynamic';
+const PdfBookReader = dynamic(() => import('../../components/PdfBookReader'), { ssr: false });
 
 export default function PdfReaderPage() {
   const [open, setOpen] = React.useState(true);

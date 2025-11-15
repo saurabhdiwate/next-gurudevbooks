@@ -69,9 +69,26 @@ export const useSearch = (books: Book[] = []): UseSearchReturn => {
         try {
           const supabaseResults = await SupabaseDataService.searchBooks(searchQuery);
           if (supabaseResults && supabaseResults.length > 0) {
+            const normalized: Book[] = supabaseResults.map(b => ({
+              id: String(b.id),
+              slug: b.slug,
+              book_name: b.book_name,
+              title: b.book_name,
+              author: b.author,
+              image_url: b.image_url,
+              pages: b.pages,
+              totalPages: b.pages,
+              category_slug: b.category_slug,
+              subcategory_slug: b.subcategory_slug,
+              pdf_url: b.pdf_url,
+              is_featured: typeof b.is_featured === 'boolean' ? (b.is_featured ? 'yes' : 'no') : b.is_featured,
+              is_popular: typeof b.is_popular === 'boolean' ? (b.is_popular ? 'yes' : 'no') : b.is_popular,
+              created_at: b.created_at,
+              updated_at: b.updated_at
+            }));
             setSuggestions(prevSuggestions => {
               const combinedResults = [...prevSuggestions];
-              supabaseResults.forEach((book: Book) => {
+              normalized.forEach((book) => {
                 if (!combinedResults.find(existing => existing.id === book.id || existing.slug === book.slug)) {
                   combinedResults.push(book);
                 }

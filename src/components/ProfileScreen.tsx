@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, User, Camera, Mail, MapPin, Edit3, Check, X } from 'lucide-react';
-import { authService, UserProfile, ReadingProgress, CompletedBook } from '../services/authService';
+import { authService, UserProfile, ReadingProgress } from '../services/authService';
 import { SupabaseDataService } from '../services/supabaseService';
 import { Book } from '../types/Book';
 
@@ -13,8 +13,8 @@ interface ProfileScreenProps {
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ onBack, onBookClick }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [readingProgress, setReadingProgress] = useState<ReadingProgress[]>([]);
-  const [completedBooks, setCompletedBooks] = useState<CompletedBook[]>([]);
-  const [recentBooks, setRecentBooks] = useState<CompletedBook[]>([]);
+  const [completedBooks, setCompletedBooks] = useState<ReadingProgress[]>([]);
+  const [recentBooks, setRecentBooks] = useState<ReadingProgress[]>([]);
   const [currentlyReadingData, setCurrentlyReadingData] = useState<any[]>([]);
   const [completedBooksData, setCompletedBooksData] = useState<any[]>([]);
   const [recentBooksData, setRecentBooksData] = useState<any[]>([]);

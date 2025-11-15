@@ -267,7 +267,7 @@ class AuthService {
     }
   }
 
-  async getCompletedBooks(): Promise<CompletedBook[]> {
+  async getCompletedBooks(): Promise<ReadingProgress[]> {
     try {
       const user = this.getCurrentUser();
       if (!user) return [];
@@ -283,7 +283,7 @@ class AuthService {
     }
   }
 
-  async getRecentBooks(): Promise<CompletedBook[]> {
+  async getRecentBooks(): Promise<ReadingProgress[]> {
     try {
       const user = this.getCurrentUser();
       if (!user) return [];

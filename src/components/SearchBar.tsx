@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ books = [], onSearch, className =
   };
 
   const handleSuggestionClick = (suggestion: Book) => {
-    const searchTerm = suggestion.book_name || suggestion.title;
+    const searchTerm = suggestion.book_name ?? suggestion.title ?? '';
     setQuery(searchTerm);
     handleSearch(searchTerm);
   };
