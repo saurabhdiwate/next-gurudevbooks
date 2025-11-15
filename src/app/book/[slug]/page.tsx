@@ -11,6 +11,7 @@ export default function BookDetailsPage() {
   const slug = (params as any)?.slug as string;
   const [book, setBook] = React.useState<any | null>(null);
   const [allBooks, setAllBooks] = React.useState<any[]>([]);
+  const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
     SupabaseDataService.getInitialBooks().then(setAllBooks).catch(() => setAllBooks([]));
@@ -20,6 +21,7 @@ export default function BookDetailsPage() {
     let cancelled = false;
     const load = async () => {
       if (!slug) return;
+      setLoading(true);
       try {
         const localBook = allBooks.find((b: any) => b.slug === slug || b.id === slug);
         if (localBook && !cancelled) {
@@ -32,6 +34,8 @@ export default function BookDetailsPage() {
         }
       } catch {
         if (!cancelled) setBook(null);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     };
     load();
@@ -43,6 +47,17 @@ export default function BookDetailsPage() {
       router.push(`/search?q=${encodeURIComponent(q)}`);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading book...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!book) {
     return (
