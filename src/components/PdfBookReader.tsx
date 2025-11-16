@@ -6,7 +6,13 @@ import 'react-pdf/dist/Page/TextLayer.css';
 import { ArrowLeft, RotateCw, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { authService } from '../services/authService';
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@5.3.93/build/pdf.worker.min.mjs`;
+// Use compatible worker version for react-pdf 10.2.0
+// Try using the worker from react-pdf's pdfjs-dist first
+const workerVersion = pdfjs.version;
+console.log('React-pdf PDF.js version:', workerVersion);
+
+// Use CDN worker that matches the react-pdf version
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${workerVersion}/build/pdf.worker.min.mjs`;
 
 interface PdfBookReaderProps {
   pdfUrl: string;
@@ -41,6 +47,9 @@ const PdfBookReader: React.FC<PdfBookReaderProps> = ({ pdfUrl, bookTitle, bookSl
   const suppressToggleRef = useRef<boolean>(false);
 
   useEffect(() => {
+    console.log('PDF.js version:', pdfjs.version);
+    console.log('PDF.js worker src:', pdfjs.GlobalWorkerOptions.workerSrc);
+    
     if (!pdfUrl) {
       setError('No PDF URL provided');
       return;
@@ -65,9 +74,25 @@ const PdfBookReader: React.FC<PdfBookReaderProps> = ({ pdfUrl, bookTitle, bookSl
   }, []);
 
   const onDocumentLoadError = useCallback((error: Error) => {
-    setError(`Failed to load PDF: ${error.message}`);
+    console.error('PDF load error:', error);
+    console.error('PDF URL:', processedPdfUrl);
+    console.error('Worker version:', pdfjs.version);
+    console.error('Worker src:', pdfjs.GlobalWorkerOptions.workerSrc);
+    
+    let errorMessage = `Failed to load PDF: ${error.message}`;
+    
+    // Handle specific PDF.js errors
+    if (error.message.includes('version')) {
+      errorMessage = 'PDF viewer version mismatch. Please refresh the page.';
+    } else if (error.message.includes('CORS')) {
+      errorMessage = 'CORS error: PDF cannot be loaded from external domain.';
+    } else if (error.message.includes('network')) {
+      errorMessage = 'Network error: Please check your internet connection.';
+    }
+    
+    setError(errorMessage);
     setLoading(false);
-  }, []);
+  }, [processedPdfUrl]);
 
   const onDocumentLoadProgress = useCallback(({ loaded, total }: { loaded: number; total: number }) => {
     if (total > 0) {
