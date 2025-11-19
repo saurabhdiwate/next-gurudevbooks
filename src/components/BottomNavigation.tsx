@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { Home, User, Menu } from 'lucide-react';
+import { Home, User, Menu, BookOpen } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 
 interface BottomNavigationProps {
@@ -13,11 +13,18 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ onMenuClick }) => {
 
   const tabs = [
     { id: 'home', icon: Home, label: 'Home', path: '/' },
+    { id: 'blog', icon: BookOpen, label: 'लेख', path: '/blog' },
     { id: 'profile', icon: User, label: 'Profile', path: '/profile' },
     { id: 'menu', icon: Menu, label: 'Menu' },
   ];
 
-  const activeId = pathname === '/profile' ? 'profile' : 'home';
+  const getActiveId = () => {
+    if (pathname === '/profile') return 'profile';
+    if (pathname.startsWith('/blog')) return 'blog';
+    return 'home';
+  };
+
+  const activeId = getActiveId();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm border-t border-gray-200 shadow-lg">
